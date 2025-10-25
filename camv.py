@@ -5,24 +5,24 @@ import winsound
 from datetime import datetime
 from ultralytics import YOLO
 
-# -------- إعدادات ---------
-URL = "your_camera_stream_url_here"  # استبدل بالرابط الصحيح
+
+URL = "your_camera_stream_url_here"  
 DETECT_EVERY_N_FRAMES = 3
 CONF_THRESHOLD = 0.5
 ALERT_COOLDOWN = 3.0
-MODEL_PATH = "yolov8n.pt"   # استخدم yolov8s.pt لو عايز دقة أعلى
-# ---------------------------
+MODEL_PATH = "yolov8n.pt"   
+
 
 model = YOLO(MODEL_PATH)
 
-# متغيرات التحكم
+
 last_frame = None
 frame_lock = threading.Lock()
 running = True
 recording = False
 video_writer = None
 last_person_time = 0
-NO_PERSON_TIMEOUT = 3  # بعد كام ثانية بدون شخص يتم إيقاف التسجيل
+NO_PERSON_TIMEOUT = 3  
 
 def reader_thread(src):
     global last_frame, running
@@ -62,17 +62,17 @@ def detector_thread():
             for box in r.boxes:
                 cls = int(box.cls[0])
                 conf = float(box.conf[0])
-                if cls == 0 and conf >= CONF_THRESHOLD:  # 0 = person
+                if cls == 0 and conf >= CONF_THRESHOLD: 
                     person_detected = True
                     break
 
-        # لو في شخص
+   
         if person_detected:
             last_person_time = time.time()
             if not recording:
                 start_recording(frame)
         else:
-            # لو مفيش شخص بقاله فترة
+      
             if recording and (time.time() - last_person_time > NO_PERSON_TIMEOUT):
                 stop_recording()
 
@@ -134,3 +134,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
